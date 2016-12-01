@@ -1,0 +1,35 @@
+#################################
+#continued hashing full terminal#
+#################################
+while (true) do date +%s | sha256sum | base64 | head -c 32 ; done
+while (true) do < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6; done
+
+##########################################
+#new random hash every second on new line#
+##########################################
+while (true) do date +%s | sha256sum | base64 | head -c 32 ; echo; done
+
+###################
+#full binarymatrix#
+###################
+echo -e "1"; while $t; do for i in `seq 1 30`;do r="$[($RANDOM % 2)]";h="$[($RANDOM % 4)]";if [ 
+$h -eq 1 ]; then v="0 $r";else v="1 $r";fi;v2="$v2 $v";done;echo -e $v2;v2="";done;
+
+#####################
+#let it snow numbers#
+#####################
+LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" 
+grep --color "[^ ]"
+
+#############
+#let it snow#
+#############
+while :;do echo $LINES $COLUMNS $(($RANDOM%$COLUMNS));sleep 0.1;done|gawk '{a[$3]=0;for(x in a) 
+{o=a[x];a[x]=a[x]+1;printf "\033[%s;%sH ",o,x;printf "\033[%s;%sH*\033[0;0H",a[x],x;}}'
+
+#####################
+#let it snow unicode#
+#####################
+while :;do echo $LINES $COLUMNS $(($RANDOM%$COLUMNS)) $(printf "\u2744\n");sleep 0.1;done|gawk 
+'{a[$3]=0;for(x in a) {o=a[x];a[x]=a[x]+1;printf "\033[%s;%sH ",o,x;printf "\033[%s;%sH%s 
+\033[0;0H",a[x],x,$4;}}'
