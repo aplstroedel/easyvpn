@@ -1,3 +1,4 @@
+test123
 #################################
 #continued hashing full terminal#
 #################################
@@ -5,7 +6,6 @@
 while (true) do date +%s | sha256sum | base64 | head -c 32 ; done
 #
 while (true) do < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6; done
-
 
 ##########################################
 #new random hash every second on new line#
