@@ -16,4 +16,4 @@ fi
 done
 done
 }
-watchandrespond
+watchandrespond&
