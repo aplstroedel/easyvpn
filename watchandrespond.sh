@@ -4,7 +4,7 @@ path=/home/"$LOGNAME"/scripts/testing/
 array=('one' 'two' 'three')
 
 watchandrespond(){
-for i in ${array[*]}
+for i in "${array[*]}"
 do
 while inotifywait -q -e modify "$path/$i/out" >/dev/null
 do 
