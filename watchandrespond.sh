@@ -1,19 +1,21 @@
 #!/usr/bin/bash
 options=('.test0' '.test1' '.test2')
-path=/home/"$LOGNAME"/scripts/testing/
+location=/home/"$LOGNAME"/scripts/testing/
 array=('one' 'two' 'three')
 
 watchandrespond(){
 for i in "${array[*]}"
 do
-while inotifywait -q -e modify "$path/$i/out" >/dev/null
+while inotifywait -q -e modify "$location/$i/out" >/dev/null
 do 
-data=($(tail -n 1 "$path/$i/out"))
+data=($(tail -n 1 "$location/$i/out"))
 if [[ "${data[1]}" = ".options" ]]
 then
-echo "${options[@]}" > "$path/$i/in"
+echo "${options[@]}" > "$location/$i/in"
 fi
 done
 done
 }
 watchandrespond&
+
+
