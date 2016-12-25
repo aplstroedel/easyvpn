@@ -1,5 +1,11 @@
 #!/bin/bash
 
+######################################
+#A typwriter that welcoms you        #
+#and writes the current date notation#
+#in the format that's been used      #
+######################################
+
 done=0
 while true ; do
 clear 
