@@ -4,6 +4,8 @@
 #A typwriter that welcoms you        #
 #and writes the current date notation#
 #in the format that's been used      #
+#                                    #
+#PS: pv and toilet as dependencies   #
 ######################################
 
 done=0
