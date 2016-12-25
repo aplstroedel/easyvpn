@@ -4,14 +4,13 @@ done=0
 
 while true ; do
 clear 
-echo "test1" | toilet -f term --gay | pv -qL 25
+printf "test1" | toilet -f term --gay | pv -qL 25
 sleep 0.5 
-echo "test2" | toilet -f term --gay | pv -qL 25
+printf "test2" | toilet -f term --gay | pv -qL 25
 sleep 0.5
-echo "test3" | toilet -f term --gay | pv -qL 25
+printf "test3" | toilet -f term --gay | pv -qL 25
 sleep 0.5
-(echo -ne 'today = ' ; date +%R\ %A\ %e\ %B\ %x) | toilet -f term | pv -qL 25
-    if [ something ]; then
+printf 'today = %s\n' "$(date +%R\ %A\ %e\ %B\ %x)"  | toilet -f term | pv -qL 25    if [ something ]; then
         break
     fi
 done
