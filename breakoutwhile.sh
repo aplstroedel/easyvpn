@@ -1,16 +1,12 @@
 #!/bin/bash
 
 done=0
-
 while true ; do
 clear 
-printf "test1" | toilet -f term --gay | pv -qL 125
-sleep 0.5 
-printf "test2" | toilet -f term --gay | pv -qL 125
-sleep 0.5
-printf "test3" | toilet -f term --gay | pv -qL 125
-sleep 0.5
-printf 'today = %s\n' "$(date +%R\ %A\ %e\ %B\ %x)"  | toilet -f term | pv -qL 125    if [ something ]; then
+printf "Good day :)" | toilet -f term --gay | pv -qL 125
+sleep 0.30
+printf 'today = %s\n' "$(date +%R\ %A\ %e\ %B\ %x)"  | toilet -f term --gay | pv -qL 125
+    if [ something ]; then
         break
     fi
 done
