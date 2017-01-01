@@ -1,4 +1,10 @@
 #!/usr/bin/bash
+
+########################################
+# still need some mods to make it work #
+########################################
+
+
 options=('.test0' '.test1' '.test2')
 location=/home/"$LOGNAME"/scripts/testing
 array=('one' 'two' 'three') # directories in directory 'testing'
