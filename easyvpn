@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+if [[ ! $(id -u) == 0 ]]
+then
+echo 'run this script as root please'
+exit
+fi
+
+if [[ ! -f /usr/bin/git ]]
+then
+echo 'please install git first'
+exit
+fi
+
+cd /tmp/
+git clone https://github.com/OpenVPN/easy-rsa.git
+cd ./easy-rsa/easyrsa3/
+cp ./vars.example ./vars
+
+
+buildserver(){
+./easyrsa init-pki
+./easyrsa build-ca nopass
+
+./easyrsa gen-dh
+
+./easyrsa gen-req "$server" nopass
+./easyrsa sign-req server "$server"
+
+openvpn --genkey --secret ta.key
+
+cp pki/ca.crt /etc/openvpn
+cp pki/issued/"$server".crt /etc/openvpn/
+cp pki/private/"server".key /etc/openvpn/
+cp pki/dh.pem /etc/openvpn/
+cp ta.key /etc/openvpn/
+}
+
+buildclient(){
+./easyrsa gen-req "$client" nopass
+./easyrsa sign-req client "$client"
+}
+
+revokeclient(){
+./easyrsa revoke "$client"
+./easyrsa gen-crl
+}
+
+echo ' '
+echo 'UBUNTU OPENVPN/EASY-RSA BASIC SCRIPT'
+echo '-------------------------------'
+echo 'tell me what you want to do'
+echo '1. install/configure openvpn'
+echo '2. add client'
+echo '3. remove client'
+read firstanswer
+echo ' '
+case $firstanswer in
+1)
+echo 'enter server hostname here'
+read server
+buildserver
+;;
+2)
+while true
+do
+echo 'enter client hostname here or press enter to quit'
+read client
+if [[ "$client" == '' ]]
+then
+break
+else
+buildclient
+fi
+done
+;;
+3)
+echo 'removing a client'
+echo 'name of the client?'
+read client
+./easyrsa revoke "$client"
+./easyrsa gen-crl
+;;
+[!1-3])
+echo 'moving on'
+;;
+esac
