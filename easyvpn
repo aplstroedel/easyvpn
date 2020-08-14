@@ -31,7 +31,7 @@ openvpn --genkey --secret ta.key
 
 cp pki/ca.crt /etc/openvpn
 cp pki/issued/"$server".crt /etc/openvpn/
-cp pki/private/"server".key /etc/openvpn/
+cp pki/private/"$server".key /etc/openvpn/
 cp pki/dh.pem /etc/openvpn/
 cp ta.key /etc/openvpn/
 }
