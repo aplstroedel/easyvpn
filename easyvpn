@@ -154,7 +154,7 @@ do
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
   read client
-  if [[ "$client" != ' ' ]]
+  if [[ ! -z "$client" ]]
   then
    ovpncreate "$client"
    echo 'your .ovpn files are located in /etc/openvpn/files/'
