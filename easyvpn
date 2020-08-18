@@ -46,6 +46,8 @@ revokeclient(){
 ./easyrsa gen-crl
 }
 
+while true
+do
 echo ' '
 echo 'UBUNTU OPENVPN/EASY-RSA BASIC SCRIPT'
 echo '-------------------------------'
@@ -81,6 +83,8 @@ read client
 revokeclient
 ;;
 [!1-3])
-echo 'moving on'
+echo 'moving on, see you later :)'
+break
 ;;
 esac
+done
