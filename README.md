@@ -1,4 +1,5 @@
 # easyvpn
+- works in ubuntu/debian
 
 Instructions:
 - git clone https://github.com/aplstroedel/easyvpn.git
