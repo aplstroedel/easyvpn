@@ -1,6 +1,6 @@
 # easyvpn
 
-preconfig:
+Instructions:
 - git clone https://github.com/aplstroedel/easyvpn.git
 - cd easyvpn
 - chmod -R +x ./*
