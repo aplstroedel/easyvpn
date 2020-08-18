@@ -167,11 +167,11 @@ do
   if [[ ! -z "$client" ]]
   then
    ovpncreate "$client"
-   echo 'your .ovpn files are located in /etc/openvpn/files/'
   else
    break
   fi
  done
+ echo 'your .ovpn files are located in /etc/openvpn/files/'
  ;;
  [!1-4])
  echo 'moving on, see you later :)'
