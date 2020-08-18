@@ -17,6 +17,43 @@ git clone https://github.com/OpenVPN/easy-rsa.git
 cd ./easy-rsa/easyrsa3/
 cp ./vars.example ./vars
 
+cat > /etc/openvpn/server.conf <<EOF
+port 1194
+
+proto udp
+
+dev tun
+
+ca ca.crt
+
+cert pi.crt
+
+dh dh.pem
+
+server 10.8.0.0 255.255.255.0
+
+ifconfig-pool-persist /var/log/openvpn/ipp.txt
+
+client-to-client
+
+keepalive 10 120
+
+cipher AES-128-gcm
+
+comp-lzo
+
+user nobody
+
+group nogroup
+
+persist-key
+
+persist-tun
+
+status /var/log/openvpn/openvpn-status.log
+
+verb 3
+EOF
 
 buildserver(){
 ./easyrsa init-pki
@@ -39,6 +76,8 @@ cp ta.key /etc/openvpn/
 buildclient(){
 ./easyrsa gen-req "$client" nopass
 ./easyrsa sign-req client "$client"
+cp pki/issued/"$client".crt /etc/openvpn/
+cp pki/private/"$client".key /etc/openvpn/
 }
 
 revokeclient(){
