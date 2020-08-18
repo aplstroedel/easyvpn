@@ -152,10 +152,14 @@ do
   mkdir -p /tmp/openvpn/clientconfigs
  fi
  cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /tmp/openvpn/clientconfigs/base.conf
+ 
  sed -i 's/;proto tcp/proto tcp/g' /tmp/openvpn/clientconfigs/base.conf
  sed -i 's/proto udp/;proto udp/g' /tmp/openvpn/clientconfigs/base.conf
+ sed -i 's/ca.crt/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
+ sed -i 's/client.crt/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
+ sed -i 's/client.key/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
+ sed -i 's/ta.key/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
  echo 'comp-lzo' >> /tmp/openvpn/clientconfigs/base.conf
- echo 'tls-auth [inline] 1' >> /tmp/openvpn/clientconfigs/base.conf
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
