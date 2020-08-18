@@ -26,7 +26,7 @@ dev tun
 
 ca ca.crt
 
-cert server.crt
+cert server.crt # CHANGE THIS!! or not :)
 
 dh dh.pem
 
