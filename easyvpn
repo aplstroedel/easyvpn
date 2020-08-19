@@ -31,6 +31,8 @@ then
 fi
 
 buildserver(){
+echo 'enter server name '
+read server
 echo 'this will overwrite currently installed openvpn server configurations[y/N]'
 read yesorno
 case $yesorno in
@@ -83,18 +85,51 @@ esac
 }
 
 buildclient(){
-./easyrsa gen-req "$client" nopass
-./easyrsa sign-req client "$client"
-cp pki/issued/"$client".crt /etc/openvpn/
-cp pki/private/"$client".key /etc/openvpn/
+if [[ -d ./pki ]]
+then
+ ./easyrsa gen-req "$client" nopass
+ ./easyrsa sign-req client "$client"
+ cp pki/issued/"$client".crt /etc/openvpn/
+ cp pki/private/"$client".key /etc/openvpn/
+else
+echo 'easyrsa not initiated yet, nothing happend'
+fi
 }
 
 revokeclient(){
+echo 'removing a client'
+echo 'name of the client?'
+read client
 ./easyrsa revoke "$client"
 ./easyrsa gen-crl
 }
 
 ovpncreate(){
+if [[ ! -d /etc/openvpn/files ]]
+then
+ mkdir -p /etc/openvpn/files
+fi
+
+if [[ ! -d /etc/openvpn/clientconfigs ]]
+then
+ mkdir -p /etc/openvpn/clientconfigs
+fi
+
+if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
+then
+ echo 'server ip?'
+ read serverip
+ cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/proto udp/;proto udp/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/ca.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/client.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i 's/#comp-lzo/comp-lzo/g' /etc/openvpn/clientconfigs/base.conf
+ sed -i "s/my-server-1/${serverip}/g" /etc/openvpn/clientconfigs/base.conf
+fi
+
 KEY_DIR=/etc/openvpn
 OUTPUT_DIR=/etc/openvpn/files
 BASE_CONFIG=/etc/openvpn/clientconfigs/base.conf
@@ -110,6 +145,7 @@ cat ${BASE_CONFIG} \
     ${KEY_DIR}/ta.key \
     <(echo -e '</tls-auth>') \
     > ${OUTPUT_DIR}/${1}.ovpn
+echo 'your .ovpn files are located in /etc/openvpn/files/'
 }
 
 while true
@@ -126,8 +162,6 @@ do
  echo ' '
  case $firstanswer in
  1)
- echo 'enter server name '
- read server
  buildserver
  ;;
  2)
@@ -144,37 +178,9 @@ do
  done
  ;;
  3)
- echo 'removing a client'
- echo 'name of the client?'
- read client
  revokeclient
  ;;
  4)
- if [[ ! -d /etc/openvpn/files ]]
- then
-  mkdir -p /etc/openvpn/files
- fi
-
- if [[ ! -d /etc/openvpn/clientconfigs ]]
- then
-  mkdir -p /etc/openvpn/clientconfigs
- fi
-
- if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
- then
-  echo 'server ip?'
-  read serverip
-  cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/proto udp/;proto udp/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/ca.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/client.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i 's/#comp-lzo/comp-lzo/g' /etc/openvpn/clientconfigs/base.conf
-  sed -i "s/my-server-1/${serverip}/g" /etc/openvpn/clientconfigs/base.conf
- fi
-
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
@@ -186,7 +192,6 @@ do
    break
   fi
  done
- echo 'your .ovpn files are located in /etc/openvpn/files/'
  ;;
  [!1-4])
  echo 'moving on, see you later :)'
