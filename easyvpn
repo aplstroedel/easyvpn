@@ -40,8 +40,8 @@ case $yesorno in
   proto tcp
   dev tun
   ca ca.crt
-  cert "$server".crt
-  key "$server".key
+  cert $server.crt
+  key $server.key
   dh dh.pem
   server 10.8.0.0 255.255.255.0
   ifconfig-pool-persist /var/log/openvpn/ipp.txt
