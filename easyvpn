@@ -22,7 +22,7 @@ then
  cd ./easy-rsa/easyrsa3/
 else
  echo 'please install openvpn first'
-exit
+ exit
 fi
 
 if [[ ! -f ./vars ]]
