@@ -34,45 +34,6 @@ if [[ ! -f /etc/openvpn/server.conf ]]
 then
  echo 'enter server name'
  read server
- cat > /etc/openvpn/server.conf <<EOF
- port 1194
-
- proto tcp
-
- dev tun
-
- ca ca.crt
-
- cert "$server".crt
-
- key "$server".key
-
- dh dh.pem
-
- server 10.8.0.0 255.255.255.0
-
- ifconfig-pool-persist /var/log/openvpn/ipp.txt
-
- client-to-client
-
- keepalive 10 120
-
- cipher AES-128-gcm
-
- comp-lzo
-
- user nobody
-
- group nogroup
-
- persist-key
-
- persist-tun
-
- status /var/log/openvpn/openvpn-status.log
-
- verb 3
-EOF
 fi
 
 buildserver(){
@@ -80,6 +41,27 @@ echo 'this will overwrite currently installed openvpn server configurations[y/N]
 read yesorno
 case $yesorno in
  y|Y)
+  cat > /etc/openvpn/server.conf <<EOF
+  port 1194
+  proto tcp
+  dev tun
+  ca ca.crt
+  cert "$server".crt
+  key "$server".key
+  dh dh.pem
+  server 10.8.0.0 255.255.255.0
+  ifconfig-pool-persist /var/log/openvpn/ipp.txt
+  client-to-client
+  keepalive 10 120
+  cipher AES-128-gcm
+  comp-lzo
+  user nobody
+  group nogroup
+  persist-key
+  persist-tun
+  status /var/log/openvpn/openvpn-status.log
+  verb 3
+EOF
   ./easyrsa init-pki
   ./easyrsa build-ca nopass
 
