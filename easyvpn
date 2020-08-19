@@ -31,7 +31,7 @@ then
 fi
 
 buildserver(){
-echo 'enter server name '
+echo 'enter server name'
 read server
 echo 'this will overwrite currently installed openvpn server configurations[y/N]'
 read yesorno
@@ -117,7 +117,7 @@ fi
 
 if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
 then
- echo 'server ip?'
+ echo 'enter server ip'
  read serverip
  cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
  sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
