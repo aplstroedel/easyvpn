@@ -158,11 +158,11 @@ do
  do
   echo 'enter client hostname here [press enter to quit]'
   read client
-  if [[ "$client" == '' ]]
+  if [[ ! -z "$client" ]]
   then
-   break
-  else
    buildclient
+  else
+   break
   fi
  done
  ;;
