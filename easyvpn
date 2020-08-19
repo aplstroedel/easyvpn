@@ -93,7 +93,8 @@ then
  cp pki/issued/"$client".crt /etc/openvpn/
  cp pki/private/"$client".key /etc/openvpn/
 else
-echo 'easyrsa not initiated yet, nothing happend'
+ echo 'easyrsa not initiated yet, nothing happend'
+ break
 fi
 }
 
