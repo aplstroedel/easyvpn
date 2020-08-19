@@ -30,12 +30,6 @@ then
  cp ./vars.example ./vars
 fi
 
-if [[ ! -f /etc/openvpn/server.conf ]]
-then
- echo 'enter server name'
- read server
-fi
-
 buildserver(){
 echo 'this will overwrite currently installed openvpn server configurations[y/N]'
 read yesorno
