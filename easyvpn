@@ -116,7 +116,7 @@ then
  mkdir -p /etc/openvpn/clientconfigs
 fi
 
-if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
+if [[ ! -f /etc/openvpn/clientconfigs/base.conf ]]
 then
  echo 'enter server ip'
  read serverip
