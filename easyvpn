@@ -168,7 +168,7 @@ do
   sed -i 's/client.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
   sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
   sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
-  echo 'comp-lzo' >> /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/#comp-lzo/comp-lzo/g' /etc/openvpn/clientconfigs/base.conf
  fi
 
  while true
