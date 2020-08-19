@@ -12,67 +12,97 @@ then
  exit
 fi
 
-cd /tmp/
-git clone https://github.com/OpenVPN/easy-rsa.git
-cd ./easy-rsa/easyrsa3/
-cp ./vars.example ./vars
+if [[ -d /etc/openvpn ]]
+then
+ cd /etc/openvpn/
+ if [[ ! -d ./easy-rsa ]]
+ then
+  git clone https://github.com/OpenVPN/easy-rsa.git
+ fi
+ cd ./easy-rsa/easyrsa3/
+else
+ echo 'please install openvpn first'
+exit
+fi
 
-cat > /etc/openvpn/server.conf <<EOF
-port 1194
+if [[ ! -f ./vars ]]
+then
+ cp ./vars.example ./vars
+fi
 
-proto tcp
+if [[ ! -f /etc/openvpn/server.conf ]]
+then
+ echo 'enter server name'
+ read server
+ cat > /etc/openvpn/server.conf <<EOF
+ port 1194
 
-dev tun
+ proto tcp
 
-ca ca.crt
+ dev tun
 
-cert server.crt # CHANGE THIS!! or not :)
+ ca ca.crt
 
-key server.key # CHANGE THIS TOO!! or not :)
+ cert "$server".crt # CHANGE THIS LATER!! or not :)
 
-dh dh.pem
+ key "$server".key # CHANGE THIS LATER!! or not :)
 
-server 10.8.0.0 255.255.255.0
+ dh dh.pem
 
-ifconfig-pool-persist /var/log/openvpn/ipp.txt
+ server 10.8.0.0 255.255.255.0
 
-client-to-client
+ ifconfig-pool-persist /var/log/openvpn/ipp.txt
 
-keepalive 10 120
+ client-to-client
 
-cipher AES-128-gcm
+ keepalive 10 120
 
-comp-lzo
+ cipher AES-128-gcm
 
-user nobody
+ comp-lzo
 
-group nogroup
+ user nobody
 
-persist-key
+ group nogroup
 
-persist-tun
+ persist-key
 
-status /var/log/openvpn/openvpn-status.log
+ persist-tun
 
-verb 3
-EOF
+ status /var/log/openvpn/openvpn-status.log
+
+ verb 3
+ EOF
+fi
 
 buildserver(){
-./easyrsa init-pki
-./easyrsa build-ca nopass
+echo 'this will overwrite currently installed openvpn server configurations[y/N]'
+read yesorno
+case $yesorno in
+ y|Y)
+  ./easyrsa init-pki
+  ./easyrsa build-ca nopass
 
-./easyrsa gen-dh
+  ./easyrsa gen-dh
 
-./easyrsa gen-req "$server" nopass
-./easyrsa sign-req server "$server"
+  ./easyrsa gen-req "$server" nopass
+  ./easyrsa sign-req server "$server"
 
-openvpn --genkey --secret ta.key
+  openvpn --genkey --secret ta.key
 
-cp pki/ca.crt /etc/openvpn
-cp pki/issued/"$server".crt /etc/openvpn/
-cp pki/private/"$server".key /etc/openvpn/
-cp pki/dh.pem /etc/openvpn/
-cp ta.key /etc/openvpn/
+  cp pki/ca.crt /etc/openvpn
+  cp pki/issued/"$server".crt /etc/openvpn/
+  cp pki/private/"$server".key /etc/openvpn/
+  cp pki/dh.pem /etc/openvpn/
+  cp ta.key /etc/openvpn/
+ ;;
+ n/N)
+  break
+ ;;
+ *)
+  break
+ ;;
+esac
 }
 
 buildclient(){
@@ -90,7 +120,7 @@ revokeclient(){
 ovpncreate(){
 KEY_DIR=/etc/openvpn
 OUTPUT_DIR=/etc/openvpn/files
-BASE_CONFIG=/tmp/openvpn/clientconfigs/base.conf
+BASE_CONFIG=/etc/openvpn/clientconfigs/base.conf
 
 cat ${BASE_CONFIG} \
     <(echo -e '<ca>') \
@@ -119,7 +149,7 @@ do
  echo ' '
  case $firstanswer in
  1)
- echo 'enter server hostname here'
+ echo 'enter server name '
  read server
  buildserver
  ;;
@@ -147,19 +177,24 @@ do
  then
   mkdir -p /etc/openvpn/files
  fi
- if [[ ! -d /tmp/openvpn/clientconfigs ]]
+
+ if [[ ! -d /etc/openvpn/clientconfigs ]]
  then
-  mkdir -p /tmp/openvpn/clientconfigs
+  mkdir -p /etc/openvpn/clientconfigs
  fi
- cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /tmp/openvpn/clientconfigs/base.conf
- 
- sed -i 's/;proto tcp/proto tcp/g' /tmp/openvpn/clientconfigs/base.conf
- sed -i 's/proto udp/;proto udp/g' /tmp/openvpn/clientconfigs/base.conf
- sed -i 's/ca.crt/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
- sed -i 's/client.crt/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
- sed -i 's/client.key/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
- sed -i 's/ta.key/[inline]/g' /tmp/openvpn/clientconfigs/base.conf
- echo 'comp-lzo' >> /tmp/openvpn/clientconfigs/base.conf
+
+ if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
+ then
+  cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/proto udp/;proto udp/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/ca.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/client.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
+  echo 'comp-lzo' >> /etc/openvpn/clientconfigs/base.conf
+ fi
+
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
