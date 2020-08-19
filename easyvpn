@@ -59,6 +59,7 @@ case $yesorno in
   status /var/log/openvpn/openvpn-status.log
   verb 3
 EOF
+
   ./easyrsa init-pki
   ./easyrsa build-ca nopass
 
@@ -119,15 +120,23 @@ if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
 then
  echo 'enter server ip'
  read serverip
- cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
- sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/proto udp/;proto udp/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/ca.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/client.crt/[inline]/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
- sed -i 's/#comp-lzo/comp-lzo/g' /etc/openvpn/clientconfigs/base.conf
- sed -i "s/my-server-1/${serverip}/g" /etc/openvpn/clientconfigs/base.conf
+ cat > /etc/openvpn/clientconfigs/base.conf <<EOF
+ client
+ dev tun
+ proto tcp
+ remote $serverip 1194
+ resolv-retry infinite
+ nobind
+ persist-key
+ persist-tun
+ ca [inline]
+ cert [inline]
+ key [inline]
+ remote-cert-tls server
+ tls-auth [inline] 1
+ cipher AES-256-CBC
+ verb 3
+EOF
 fi
 
 KEY_DIR=/etc/openvpn
