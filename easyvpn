@@ -161,6 +161,8 @@ do
 
  if [[ ! -f /etc/opevpn/clientconfigs/base.conf ]]
  then
+  echo 'server ip?'
+  read serverip
   cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfigs/base.conf
   sed -i 's/;proto tcp/proto tcp/g' /etc/openvpn/clientconfigs/base.conf
   sed -i 's/proto udp/;proto udp/g' /etc/openvpn/clientconfigs/base.conf
@@ -169,6 +171,7 @@ do
   sed -i 's/client.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
   sed -i 's/ta.key/[inline]/g' /etc/openvpn/clientconfigs/base.conf
   sed -i 's/#comp-lzo/comp-lzo/g' /etc/openvpn/clientconfigs/base.conf
+  sed -i "s/my-server-1/${serverip}/g" /etc/openvpn/clientconfigs/base.conf
  fi
 
  while true
