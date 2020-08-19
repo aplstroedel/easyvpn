@@ -72,7 +72,7 @@ then
  status /var/log/openvpn/openvpn-status.log
 
  verb 3
- EOF
+EOF
 fi
 
 buildserver(){
