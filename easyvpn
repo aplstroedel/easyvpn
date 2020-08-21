@@ -119,8 +119,6 @@ fi
 
 if [[ ! -f /etc/openvpn/clientconfigs/base.conf ]]
 then
- echo 'enter server ip'
- read serverip
  cat > /etc/openvpn/clientconfigs/base.conf <<EOF
  client
  dev tun
@@ -191,6 +189,8 @@ do
  revokeclient
  ;;
  4)
+ echo 'enter server ip'
+ read serverip
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
