@@ -132,6 +132,7 @@ then
  cert [inline]
  key [inline]
  remote-cert-tls server
+ comp-lzo
  tls-auth [inline] 1
  cipher AES-256-CBC
  verb 3
