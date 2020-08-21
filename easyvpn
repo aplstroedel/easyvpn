@@ -160,7 +160,7 @@ echo 'your .ovpn files are located in /etc/openvpn/files/'
 while true
 do
  echo ' '
- echo 'UBUNTU OPENVPN/EASY-RSA BASIC SCRIPT'
+ echo 'OPENVPN/EASY-RSA BASIC SCRIPT'
  echo '-------------------------------'
  echo 'tell me what you want to do'
  echo '1. install/configure openvpn'
