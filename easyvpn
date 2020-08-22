@@ -131,6 +131,7 @@ then
  ca [inline]
  cert [inline]
  key [inline]
+ auth-nocache
  remote-cert-tls server
  comp-lzo
  tls-auth [inline] 1
