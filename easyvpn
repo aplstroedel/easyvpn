@@ -98,14 +98,6 @@ else
 fi
 }
 
-revokeclient(){
-echo 'removing a client'
-echo 'name of the client?'
-read client
-./easyrsa revoke "$client"
-./easyrsa gen-crl
-}
-
 ovpncreate(){
 if [[ ! -d /etc/openvpn/files ]]
 then
@@ -156,6 +148,14 @@ cat ${BASE_CONFIG} \
     <(echo -e '</tls-auth>') \
     > ${OUTPUT_DIR}/${1}.ovpn
 echo 'your .ovpn files are located in /etc/openvpn/files/'
+}
+
+revokeclient(){
+echo 'removing a client'
+echo 'name of the client?'
+read client
+./easyrsa revoke "$client"
+./easyrsa gen-crl
 }
 
 while true
