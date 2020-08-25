@@ -123,7 +123,7 @@ then
  client
  dev tun
  proto tcp
- remote $serverip 1194
+ remote $fqdnorip 1194
  resolv-retry infinite
  nobind
  persist-key
@@ -165,9 +165,9 @@ do
  echo '-------------------------------'
  echo 'tell me what you want to do'
  echo '1. install/configure openvpn'
- echo '2. add client'
- echo '3. remove client'
- echo '4. make .ovpn files'
+ echo '2. create client configs'
+ echo '3. make the .ovpn files'
+ echo '4. remove a client'
  read firstanswer
  echo ' '
  case $firstanswer in
@@ -188,11 +188,8 @@ do
  done
  ;;
  3)
- revokeclient
- ;;
- 4)
- echo 'enter server ip'
- read serverip
+ echo 'enter server fqdn or ip'
+ read fqdnorip
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
@@ -204,6 +201,10 @@ do
    break
   fi
  done
+ unset fqdnorip
+ ;;
+ 4)
+ revokeclient
  ;;
  [!1-4])
  echo 'moving on, see you later :)'
