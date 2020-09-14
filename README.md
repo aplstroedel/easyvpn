@@ -6,5 +6,5 @@ Instructions:
 - cd easyvpn
 - chmod -R +x ./*
 - run ./easyvpn and follow the instructions.
-- Add the iptables script to your crontab [sudo crontab -e]: @reboot /path/to/iptables.sh [interface]
+- add the iptables script to your crontab [sudo crontab -e]: @reboot /path/to/iptables.sh [interface]
 - done! :)
