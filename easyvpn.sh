@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 if [[ ! $(id -u) == 0 ]]
 then
  echo 'run this script as root please'
