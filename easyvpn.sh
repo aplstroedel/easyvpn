@@ -151,11 +151,10 @@ echo 'your .ovpn files are located in /etc/openvpn/files/'
 }
 
 revokeclient(){
-echo 'removing a client'
-echo 'name of the client?'
-read client
-./easyrsa revoke "$client"
-./easyrsa gen-crl
+ echo 'removing a client'
+ echo 'name of the client?'
+ read client
+ ./easyrsa revoke-full "$client"
 }
 
 while true
