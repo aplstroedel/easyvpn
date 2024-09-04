@@ -46,18 +46,19 @@ case $yesorno in
   key $server.key
   dh dh.pem
   tls-auth ta.key 0
+  crl-verify /etc/openvpn/server/crl.pem 
   server 10.8.0.0 255.255.255.0
   ifconfig-pool-persist /var/log/openvpn/ipp.txt
   client-to-client
   keepalive 10 120
   cipher AES-256-CBC
-  comp-lzo
+  data-ciphers-fallback AES-256-CBC
   user nobody
   group nogroup
   persist-key
   persist-tun
   status /var/log/openvpn/openvpn-status.log
-  verb 3
+  verb 4
 EOF
 
   ./easyrsa init-pki
@@ -115,7 +116,7 @@ then
  client
  dev tun
  proto tcp
- remote $fqdnorip 1194
+ remote $2 $3
  resolv-retry infinite
  nobind
  persist-key
@@ -125,10 +126,12 @@ then
  key [inline]
  auth-nocache
  remote-cert-tls server
- comp-lzo
  tls-auth [inline] 1
+ tls-client
  cipher AES-256-CBC
+ data-ciphers-fallback AES-256-CBC
  verb 3
+ log /var/log/openvpn/client.log
 EOF
 fi
 
@@ -152,9 +155,14 @@ echo 'your .ovpn files are located in /etc/openvpn/files/'
 
 revokeclient(){
  echo 'removing a client'
- echo 'name of the client?'
+ echo 'name of the client? [press enter to quit]'
  read client
- ./easyrsa revoke-full "$client"
+  if [[ ! -z "$client" ]]
+  then
+   ./easyrsa revoke "$client"
+  else
+   break
+  fi
 }
 
 while true
@@ -167,6 +175,7 @@ do
  echo '2. create client configs'
  echo '3. make the .ovpn files'
  echo '4. remove a client'
+ echo 'Any other key and/or enter to exit'
  read firstanswer
  echo ' '
  case $firstanswer in
@@ -187,15 +196,19 @@ do
  done
  ;;
  3)
- echo 'enter server fqdn or ip'
+ echo 'enter server (fqdn or ip)'
  read fqdnorip
+ echo 'thank you :), what port is the server listening on?'
+ read port
+ echo "alrighty then, let's go!"
+ sleep 1.5s
  while true
  do
   echo 'which client do you want to convert to .ovpn? [press enter to quit]'
   read client
   if [[ ! -z "$client" ]]
   then
-   ovpncreate "$client"
+   ovpncreate "$client" "$fqdnorip" "$port"
   else
    break
   fi
@@ -205,7 +218,7 @@ do
  4)
  revokeclient
  ;;
- [!1-4])
+ [!1-4]|'')
  echo 'moving on, see you later :)'
  break
  ;;
