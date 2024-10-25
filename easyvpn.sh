@@ -113,7 +113,7 @@ fi
 if [[ ! -f /etc/openvpn/clientconfigs/base.conf ]]
 then
  cat > /etc/openvpn/clientconfigs/base.conf <<EOF
- client
+client
  dev tun
  proto tcp
  remote $2 $3
