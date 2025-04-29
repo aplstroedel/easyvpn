@@ -45,7 +45,7 @@ case $yesorno in
   cert $server.crt
   key $server.key
   dh dh.pem
-  tls-auth ta.key 0
+  tls-crypt ta.key 0
   crl-verify /etc/openvpn/server/crl.pem 
   server 10.8.0.0 255.255.255.0
   ifconfig-pool-persist /var/log/openvpn/ipp.txt
@@ -68,8 +68,9 @@ EOF
 
   ./easyrsa gen-req "$server" nopass
   ./easyrsa sign-req server "$server"
+  ./easyrsa gen-crl
 
-  openvpn --genkey --secret ta.key
+  openvpn --genkey secret ta.key
 
   cp pki/ca.crt /etc/openvpn
   cp pki/issued/"$server".crt /etc/openvpn/
@@ -126,7 +127,7 @@ then
  key [inline]
  auth-nocache
  remote-cert-tls server
- tls-auth [inline] 1
+ tls-crypt [inline] 1
  tls-client
  cipher AES-256-CBC
  data-ciphers-fallback AES-256-CBC
@@ -146,9 +147,9 @@ cat ${BASE_CONFIG} \
     ${KEY_DIR}/${1}.crt \
     <(echo -e '</cert>\n<key>') \
     ${KEY_DIR}/${1}.key \
-    <(echo -e '</key>\nkey-direction 1\n<tls-auth>') \
+    <(echo -e '</key>\nkey-direction 1\n<tls-crypt>') \
     ${KEY_DIR}/ta.key \
-    <(echo -e '</tls-auth>') \
+    <(echo -e '</tls-crypt>') \
     > ${OUTPUT_DIR}/${1}.ovpn
 echo 'your .ovpn files are located in /etc/openvpn/files/'
 }
