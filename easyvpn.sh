@@ -63,20 +63,23 @@ EOF
 
   ./easyrsa init-pki
   ./easyrsa build-ca nopass
-
   ./easyrsa gen-dh
-
+  ./easyrsa --batch --days=3650 build-server-full server nopass
+  ./easyrsa --batch --days=3650 build-client-full "$client" nopass
   ./easyrsa gen-req "$server" nopass
   ./easyrsa sign-req server "$server"
-  ./easyrsa gen-crl
+  ./easyrsa --batch --days=3650 gen-crl
 
-  openvpn --genkey secret ta.key
-
-  cp pki/ca.crt /etc/openvpn
+  cp pki/ca.crt /etc/openvpn/
   cp pki/issued/"$server".crt /etc/openvpn/
   cp pki/private/"$server".key /etc/openvpn/
   cp pki/dh.pem /etc/openvpn/
-  cp ta.key /etc/openvpn/
+  cp pki/crl.pem /etc/openvpn/server/
+
+  chmod o+x /etc/openvpn/
+
+  openvpn --genkey secret /etc/openvpn/ta.key
+
  ;;
  n/N)
   break
